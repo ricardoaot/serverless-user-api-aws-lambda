@@ -1,0 +1,43 @@
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: aws-lambda-crud-node
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: 
+        - "arn:aws:dynamodb:us-east-1:*:table/TaskTable"
+
+functions:
+  hello:
+    handler: src/handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+resources:
+  Resources:
+    TaskTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TaskTable
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        # StreamSpecification:
+        #   StreamViewType: NEW_AND_OLD_IMAGES
+        # SSESpecification:
+        #   SSEEnabled: true
+        # Tags:
