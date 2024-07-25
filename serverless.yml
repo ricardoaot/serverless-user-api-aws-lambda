@@ -11,22 +11,50 @@ provider:
       Action:
         - "dynamodb:*"
       Resource: 
-        - "arn:aws:dynamodb:us-east-1:*:table/TaskTable"
+        - "arn:aws:dynamodb:us-east-1:*:table/UserTable"
 
 functions:
-  hello:
-    handler: src/handler.hello
+  getUsers:
+    handler: src/getUsers.getUsers
     events:
       - httpApi:
-          path: /
+          path: /users
           method: get
+
+  getUser:
+    handler: src/getUser.getUser
+    events:
+      - httpApi:
+          path: /users/{id}
+          method: get
+
+  addUser:
+    handler: src/addUser.addUser
+    events:
+      - httpApi:
+          path: /users
+          method: post
+
+  updateUser:
+    handler: src/updateUser.updateUser
+    events:
+      - httpApi:
+          path: /users/{id}
+          method: put
+
+  deleteUser:
+    handler: src/deleteUser.deleteUser
+    events:
+      - httpApi:
+          path: /users/{id}
+          method: delete
 
 resources:
   Resources:
-    TaskTable:
+    UserTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: TaskTable
+        TableName: UserTable
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
